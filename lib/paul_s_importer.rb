@@ -21,11 +21,12 @@ def import(file, partner)
 
        # convert the billing_address instance to hash and then build the shipping_adress instance associated with the customer from the billing_address_hash
        billing_address_hash = billing_address.instance_to_hash
-       shipping_address = customer1.shipping_addresses.build(billing_address_hash)
+       shipping_address = customer.shipping_addresses.build(billing_address_hash)
     # if the inputted shipping address not same as billing address fields above and shipping_address1 and shipping_city filled in, then set shipping address from cvs file
     elsif row[:shipping_address1].present? && row[:shipping_city].present?
 
       # set shipping address attributes from cvs rows
+      shipping_address = customer.shipping_addresses.build
       shipping_address.street_address = row[:shipping_address1]
       shipping_address.street_address_2 = row[:shipping_address2]
       shipping_address.city = row[:shipping_city]

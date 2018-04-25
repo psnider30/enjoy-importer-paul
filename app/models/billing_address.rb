@@ -2,13 +2,7 @@ class BillingAddress < ApplicationRecord
   belongs_to :customer
   belongs_to :order
 
-  #sets billing_address attribute to be same as shipping_adress or cvs hash
-  def set_same_as_shipping_address(shipping_address_hash)
-    shipping_address_hash.each do |attr, value|
-      self.send("#{attr}=", value)
-    end
-  end
-
+  # convert instance of BillingAddress to hash so return value can be used with assign_attributes
    def instance_to_hash
      billing_address = {}
      billing_address[:street_address] = street_address

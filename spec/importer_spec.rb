@@ -36,9 +36,9 @@ describe 'importer tests: ' do
        billing_address.zip == shipping_zip_row
 
        billing_address_hash = billing_address.instance_to_hash
-       shipping_address = customer1.shipping_addresses.build
-       shipping_address.set_same_as_billing_address(billing_address_hash)
+       shipping_address = customer1.shipping_addresses.build(billing_address_hash)
      end
+
     expect(shipping_address.street_address).to eq(billing_address1.street_address)
     expect(shipping_address.instance_of?(ShippingAddress)).to eq(true)
   end
@@ -56,19 +56,20 @@ describe 'importer tests: ' do
        billing_address.city == shipping_city_row &&
        billing_address.zip == shipping_zip_row
 
-       shipping_address = billing_address
+       billing_address_hash = billing_address.instance_to_hash
+       shipping_address = customer1.shipping_addresses.build(billing_address_hash)
 
     elsif shipping_address1_row.present? && shipping_city_row.present?
-      shipping_address = {}
-      shipping_address[:street_address] = shipping_address1_row
-      shipping_address[:street_address_2] = shipping_address2_row
-      shipping_address[:city] = shipping_city_row
-      shipping_address[:state] = shipping_state_row
-      shipping_address[:country] = shipping_country_row
-      shipping_address[:zip] = shipping_zip_row
+      shipping_address = customer1.shipping_addresses.build
+      shipping_address.street_address = shipping_address1_row
+      shipping_address.street_address_2 = shipping_address2_row
+      shipping_address.city = shipping_city_row
+      shipping_address.state = shipping_state_row
+      shipping_address.country = shipping_country_row
+      shipping_address.zip = shipping_zip_row
     end
-     expect(shipping_address).not_to eq(billing_address1)
-     expect(shipping_address[:street_address_2]).to eq('Apt B')
+     expect(shipping_address.street_address).not_to eq(billing_address1.street_address)
+     expect(shipping_address.street_address_2).to eq('Apt B')
   end
 
   it 'does not assign values for shipping_address if different address and shipping_address1 and shipping_city rows are not present' do
@@ -83,12 +84,12 @@ describe 'importer tests: ' do
        shipping_address = billing_address
 
     elsif shipping_address1_row.present? && shipping_city_row.present?
+      # just set as empty hash to save space in test file
       shipping_address = {}
     else
       shipping_address = nil
     end
     expect(shipping_address).to eq(nil)
-    expect(shipping_address).not_to eq(billing_address1)
     expect(shipping_address).not_to eq({})
   end
 
